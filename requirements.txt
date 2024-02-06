@@ -1,0 +1,10 @@
+Flask
+PyPDF2
+pytesseract
+Pillow
+pdfminer.six
+ipywidgets
+pymupdf
+nltk
+nameparser
+requests
