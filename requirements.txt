@@ -9,3 +9,7 @@ nltk
 nameparser
 requests
 docx
+flask_cors
+gunicorn
+python-docx>=0.8.10
+numpy

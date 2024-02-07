@@ -48,3 +48,17 @@ def upload_and_process():
         return jsonify({"message": "Data extraction complete. Output saved to CSV.", "File Path": csv_file_path}), 200
     else:
         return jsonify({"error": "Failed to extract text from files."}), 500
+
+
+
+@main.route('/data', methods=['GET'])
+def get_data():
+    # Read the CSV file and return the data
+    try:
+        with open('output.csv', 'r') as file:
+            data = file.read()
+        return jsonify({"data": data}), 200
+    except FileNotFoundError:
+        return jsonify({"error": "Output CSV file not found."}), 404
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500

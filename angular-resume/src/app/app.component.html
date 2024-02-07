@@ -1,11 +1,22 @@
-
 <div style="text-align:center">
-  <input type="file" (change)="handleFileInput($event)" />
+  <input type="file" (change)="handleFileInput($event)" multiple />
   <button (click)="uploadFileToActivity()">Upload</button>
 </div>
 
-<!-- Add below to display the response data -->
-<div *ngIf="responseData">
-  <h3>Upload Response:</h3>
-  <pre>{{ responseData | json }}</pre>
+<!-- Display the parsed table data -->
+<div *ngIf="!processing && tableData.length">
+  <h3>Table Data:</h3>
+  <table>
+    <tr>
+      <th *ngFor="let header of tableData[0] | keyvalue">{{ header.key }}</th>
+    </tr>
+    <tr *ngFor="let row of tableData">
+      <td *ngFor="let cell of row | keyvalue">{{ cell.value }}</td>
+    </tr>
+  </table>
+</div>
+
+<!-- Add loading indicator while processing is ongoing -->
+<div *ngIf="processing">
+  <p>Loading...</p>
 </div>

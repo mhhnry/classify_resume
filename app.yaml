@@ -1,0 +1,10 @@
+runtime: python39  # Choose a runtime compatible with your app, e.g., python37, python38, python39
+entrypoint: gunicorn -b :$PORT main:app  # Adjust for Flask app object location if necessary
+
+env_variables:
+  FLASK_ENV: 'production'
+  # Add other environment variables here, if needed
+
+handlers:
+- url: /.*
+  script: auto

@@ -24,7 +24,7 @@ nltk.download('words', quiet=True)
 nltk.download('punkt', quiet=True)
 
 # Set Tesseract command path
-pytesseract.pytesseract.tesseract_cmd = '/opt/homebrew/bin/tesseract' 
+pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract' 
 
 def extract_text_from_pdf_with_images(content):
     text = ""
