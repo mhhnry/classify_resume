@@ -1,48 +1,50 @@
 from flask import Blueprint, request, jsonify, current_app
-from .utils import (extract_text_from_pdf_with_images, extract_name, extract_email, 
-                    extract_website, extract_and_format_phone_numbers, extract_skills,
-                    write_to_csv, get_access_token)
+from werkzeug.utils import secure_filename
+
+from .utils import ( write_to_csv, extract_text_based_on_file_type, process_extracted_text)
+
+
+ALLOWED_EXTENSIONS = {'pdf', 'docx', 'png', 'jpg', 'jpeg'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 main = Blueprint('main', __name__)
-
 
 @main.route('/upload', methods=['POST'])
 def upload_and_process():
     current_app.logger.info("Upload endpoint hit")
 
-    if 'file' not in request.files:
+    if not request.files:
         current_app.logger.error("No file part")
         return jsonify({"error": "No file part"}), 400
 
-    file = request.files['file']
-    current_app.logger.info(f"Processing file: {file.filename}")
-    content = file.read()  # Read the content of the file uploaded
+    extracted_data = []
 
-    # Process the uploaded file content
-    text = extract_text_from_pdf_with_images(content)
-    if text:
-        name = extract_name(text)
-        email = extract_email(text)
-        website = extract_website(text)
-        phone_numbers = extract_and_format_phone_numbers([text])
-        
-        access_token = get_access_token()
-        skills = extract_skills(text, access_token) if access_token else "Skills extraction failed due to missing access token."
+    files = request.files.getlist('files[]')
 
-        # Compile extracted data into a list of dictionaries (one entry for simplicity)
-        extracted_data = [{
-            'Full Name': name,
-            'Email Address': email,
-            'Website': website,
-            'Phone Number': ', '.join(phone_numbers),  
-            'Skills': skills
-        }]
+    for file in files:
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            current_app.logger.info(f"Processing file: {filename}")
+            
+            # Extract text based on file type
+            text = extract_text_based_on_file_type(file, filename)
+            
+            # Process extracted text (common for all file types)
+            if text:
+                name, email, website, phone_numbers, skills = process_extracted_text(text)
+                extracted_data.append({
+                    'Full Name': name,
+                    'Email Address': email,
+                    'Website': website,
+                    'Phone Number': ', '.join(phone_numbers),
+                    'Skills': skills
+                })
 
-        # Define the CSV file path
-        csv_file_path = 'output.csv'
-        write_to_csv(extracted_data, csv_file_path)
-
-        # Return a success message with file path
+    # Write to CSV and return response
+    if extracted_data:
+        csv_file_path = write_to_csv(extracted_data, 'output.csv')
         return jsonify({"message": "Data extraction complete. Output saved to CSV.", "File Path": csv_file_path}), 200
     else:
-        return jsonify({"error": "Failed to extract text from file."}), 500
+        return jsonify({"error": "Failed to extract text from files."}), 500

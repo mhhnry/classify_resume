@@ -1,8 +1,6 @@
-import os
 import re
 import csv
 import requests
-import json
 from io import BytesIO
 from PIL import Image
 import pytesseract
@@ -13,6 +11,7 @@ from nltk.tree import Tree
 from nameparser.parser import HumanName
 from flask import current_app
 import logging
+from docx import Document
 
 
 logger = logging.getLogger(__name__)
@@ -25,7 +24,7 @@ nltk.download('words', quiet=True)
 nltk.download('punkt', quiet=True)
 
 # Set Tesseract command path
-pytesseract.pytesseract.tesseract_cmd = '/opt/homebrew/bin/tesseract'  # Adjust as per your environment
+pytesseract.pytesseract.tesseract_cmd = '/opt/homebrew/bin/tesseract' 
 
 def extract_text_from_pdf_with_images(content):
     text = ""
@@ -50,6 +49,21 @@ def extract_text_from_pdf_with_images(content):
     finally:
         if 'doc' in locals():
             doc.close()
+    return text
+
+def extract_text_from_docx(file):
+    doc = Document(file)
+    return "\n".join([paragraph.text for paragraph in doc.paragraphs])
+
+# Function to extract text from image using file content
+def extract_text_from_image(content):
+
+    # Open the image using PIL's Image.open() and BytesIO to read image content from bytes
+    image = Image.open(content)
+
+    # Use Tesseract OCR to extract text from the opened image
+    text = pytesseract.image_to_string(image)
+    # Return the extracted text as a string
     return text
 
 def extract_name(text):
@@ -161,3 +175,35 @@ def write_to_csv(data, csv_file_path):
         for row in data:
             writer.writerow(row)
 
+
+def extract_text_based_on_file_type(file, filename):
+    file_extension = filename.rsplit('.', 1)[1].lower()
+    if file_extension in ['pdf']:
+        return extract_text_from_pdf_with_images(file.read())
+    elif file_extension in ['docx']:
+        return extract_text_from_docx(file)
+    elif file_extension in ['png', 'jpg', 'jpeg']:
+        return extract_text_from_image(file)
+    return ""
+
+def write_to_csv(data, csv_file_path):
+    with open(csv_file_path, 'w', newline='', encoding='utf-8') as csvfile:
+        fieldnames = ['Full Name', 'Email Address', 'Website', 'Phone Number', 'Skills']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
+        for row in data:
+            writer.writerow(row)
+    return csv_file_path
+
+
+def process_extracted_text(text):
+    # Example processing, replace with actual logic
+    name = extract_name(text)
+    email = extract_email(text)
+    website = extract_website(text)
+    phone_numbers = extract_and_format_phone_numbers([text])
+    # Assuming `get_access_token` and `extract_skills` functions are defined elsewhere and work as intended
+    access_token = get_access_token()
+    skills = extract_skills(text, access_token) if access_token else "Skills extraction failed due to missing access token."
+    
+    return name, email, website, phone_numbers, skills
