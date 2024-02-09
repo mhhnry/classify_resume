@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class DataService {
-  private baseURL: string = "http://127.0.0.1:5000";
+  private baseURL: string = "https://my-flask-app-ge2upkdelq-uc.a.run.app";
 
   constructor(private http: HttpClient) { }
 
