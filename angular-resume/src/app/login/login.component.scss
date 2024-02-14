@@ -1,0 +1,33 @@
+.login-card {
+    max-width: 400px;
+    margin: auto;
+    padding: 40px 20px; /* Adjusted padding */
+    text-align: center;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); // Adding box-shadow
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  
+    .full-width {
+      width: 100%;
+    }
+  
+    .login-button {
+      margin-top: 20px;
+      width: 100%;
+  
+      &:hover {
+        background-color: rgba(255, 192, 203, 0.5); // Light transparent pink
+      }
+    }
+  
+    @media (max-width: 600px) {
+      font-size: 14px; // Decreasing font size for smaller screens
+    }
+  }
+  

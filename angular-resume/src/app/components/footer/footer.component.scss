@@ -1,0 +1,35 @@
+.navbar {
+    background-color: rgba(255, 192, 203, 0.5); /* Light pink background */
+    display: flex;
+    justify-content: center; /* Center align all items */
+    align-items: center; /* Vertically center items */
+    padding: 1rem 2rem;
+  }
+  
+  .logo {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Ensure content inside logo is centered */
+  }
+  
+  .logo-img {
+    width: 50px; /* Set the width of the logo */
+    height: auto; /* Maintain aspect ratio */
+    margin-right: 10px; /* Add some space between logo and text */
+  }
+  
+  .logo a {
+    color: #000000; /* Deep purple accent */
+    text-decoration: none;
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  .logo a:hover {
+    color: #ad7feb; /* Lighter purple on hover */
+  }
+  
+  .title {
+    text-align: center; /* Center align the title */
+  }
+  

@@ -1,22 +1,7 @@
-<div style="text-align:center">
-  <input type="file" (change)="handleFileInput($event)" multiple />
-  <button (click)="uploadFileToActivity()">Upload</button>
-</div>
 
-<!-- Display the parsed table data -->
-<div *ngIf="!processing && tableData.length">
-  <h3>Table Data:</h3>
-  <table>
-    <tr>
-      <th *ngFor="let header of tableData[0] | keyvalue">{{ header.key }}</th>
-    </tr>
-    <tr *ngFor="let row of tableData">
-      <td *ngFor="let cell of row | keyvalue">{{ cell.value }}</td>
-    </tr>
-  </table>
-</div>
+<app-header></app-header>
 
-<!-- Add loading indicator while processing is ongoing -->
-<div *ngIf="processing">
-  <p>Loading...</p>
-</div>
+<router-outlet></router-outlet>
+
+
+
