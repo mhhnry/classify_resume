@@ -1,1 +1,5 @@
-{}
+{
+  "projects": {
+    "default": "fuchsia-a9f5d"
+  }
+}

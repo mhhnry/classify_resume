@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "angular-resume",
+    "public": "dist/angular-resume",
     "ignore": [
       "firebase.json",
       "**/.*",
